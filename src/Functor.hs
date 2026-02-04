@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE RankNTypes #-}  -- gives forall
 
 module Functor where
 
@@ -16,7 +16,7 @@ type NaturalTransformation f g = forall a b. f a b -> g a b
 
 -- Batch normalization as a natural transformation
 -- (Simplified version - just shifts outputs)
-batchNorm :: Double -> Double -> NaturalTransformation Layer Layer
+batchNorm :: Double -> Double -> Layer a [Double] -> Layer a [Double]
 batchNorm mean std layer = Layer
   { parameters = parameters layer ++ [mean, std]
   , forward = \x ->
@@ -24,7 +24,8 @@ batchNorm mean std layer = Layer
           normalized = map (\v -> (v - mean) / std) y
       in normalized
   , backward = \x dy ->
-      backward layer x dy ++ [0, 0]  -- Simplified gradient
+      let (paramGrads, inputGrad) = backward layer x dy 
+      in (paramGrads ++ [0, 0], inputGrad)  -- Pass through gradient | the derivatives are gross, we're not dealing with them now
   }
 
 -- Parameter update as a functor
