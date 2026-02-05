@@ -5,6 +5,7 @@ import Training
 import Category
 
 import System.Random
+import System.Directory (createDirectoryIfMissing)
 
 -- XOR dataset
 xorData :: [([Double], [Double])]
@@ -15,7 +16,6 @@ xorData =
   , ([1, 1], [0])
   ]
   
-
 
 -- Initialize weights:
 -- Layer 1: 2*4 weights + 4 biases = 12
@@ -35,20 +35,27 @@ xorNetwork weights =
 
 
 
--- Number of training epochs
+-- hyperparams
 epoch = 10000
--- Learning rate
 lr = 0.5
 
 
 trainXOR :: IO ()
 trainXOR = do
-  weights <- randomWeights 17  -- Changed from 12 to 17!
+  weights <- randomWeights 17
   
   let network = xorNetwork weights
-      trained = train epoch lr network xorData
+      (trained, losses) = trainWithHistory epoch lr network xorData
+  
+  -- Ensure results directory exists
+  createDirectoryIfMissing True "results"
+  -- Save losses to file
+  writeFile "results/XOR_losses.txt" (unlines $ map show losses)
   
   putStrLn ("Testing XOR network.. epochs: " ++ show epoch ++ " LR: " ++ show lr)
+  putStrLn ("Loss history saved to results/losses.txt")
+  putStrLn ("Final loss: " ++ show (last losses))
+  
   mapM_ (testExample trained) xorData
   where
     testExample net (input, expected) = do
