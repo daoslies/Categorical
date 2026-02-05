@@ -35,7 +35,7 @@ network =
 The example network learns XOR from scratch:
 
 
-[results/loss_curve.png]
+![XOR training loss curve](results/loss_curve.png)
 
 ```
 
