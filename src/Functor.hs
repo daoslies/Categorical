@@ -19,13 +19,15 @@ type NaturalTransformation f g = forall a b. f a b -> g a b
 batchNorm :: Double -> Double -> Layer a [Double] -> Layer a [Double]
 batchNorm mean std layer = Layer
   { parameters = parameters layer ++ [mean, std]
-  , forward = \x ->
-      let y = forward layer x
-          normalized = map (\v -> (v - mean) / std) y
+  , forward = \params x ->
+      let (layerParams, [mean', std']) = splitAt (length $ parameters layer) params
+          y = forward layer layerParams x
+          normalized = map (\v -> (v - mean') / std') y
       in normalized
-  , backward = \x dy ->
-      let (paramGrads, inputGrad) = backward layer x dy 
-      in (paramGrads ++ [0, 0], inputGrad)  -- Pass through gradient | the derivatives are gross, we're not dealing with them now
+  , backward = \params x dy ->
+      let (layerParams, [_, _]) = splitAt (length $ parameters layer) params
+          (paramGrads, inputGrad) = backward layer layerParams x dy
+      in (paramGrads ++ [0, 0], inputGrad)
   }
 
 -- Parameter update as a functor

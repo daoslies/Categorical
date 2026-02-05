@@ -2,6 +2,7 @@ module Training where
 
 import Layer
 import Functor
+import Debug.Trace
 
 -- Loss function (MSE)
 mse :: [Double] -> [Double] -> Double
@@ -14,12 +15,16 @@ mseLossGrad predicted actual =
   [2 * (p - a) / fromIntegral (length predicted) | (p, a) <- zip predicted actual]
 
 -- Single training step
+-- Passes parameters explicitly to forward and backward
 trainStep :: Double -> Layer [Double] [Double] -> ([Double], [Double]) -> Layer [Double] [Double]
 trainStep learningRate network (input, target) =
-  let predicted = forward network input
+  let params = parameters network
+      predicted = forward network params input  -- Pass params!
       lossGrad = mseLossGrad predicted target
-      (paramGrad, _) = backward network input lossGrad
-  in updateParameters learningRate paramGrad network
+      (paramGrad, _) = backward network params input lossGrad  -- Pass params!
+      updated = updateParameters learningRate paramGrad network
+  in trace ("Params before: " ++ show (take 3 $ parameters network) ++    -- uncomment to print params during training
+            " after: " ++ show (take 3 $ parameters updated)) updated
 
 -- Train for multiple epochs
 train :: Int -> Double -> Layer [Double] [Double] -> [([Double], [Double])] -> Layer [Double] [Double]
