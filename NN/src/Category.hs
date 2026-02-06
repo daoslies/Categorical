@@ -1,7 +1,7 @@
+module Category where
+
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
-
-module Category where
 
 -- A category where morphisms are parameterized by input/output types
 class Category k where

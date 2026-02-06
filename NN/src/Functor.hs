@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes #-}  -- gives forall
+{-# LANGUAGE RankNTypes #-}
 
 module Functor where
 

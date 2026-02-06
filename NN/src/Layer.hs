@@ -1,8 +1,8 @@
+module Layer where
+
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
-
-module Layer where
 
 import Category
 
@@ -77,15 +77,6 @@ dense inSize outSize initialParams =
         in (weightGrads ++ biasGrads, inputGrad)
     }
 
--- Activations
--- No parameters, just apply function elementwise
-{-activation :: (Double -> Double) -> Layer [Double] [Double]
-activation f = Layer
-  { parameters = []
-  , forward = \_ -> map f
-  , backward = \_ _ grad -> ([], grad)
-  }
--}
 -- ReLU with proper gradient
 relu :: Layer [Double] [Double]
 relu = Layer
