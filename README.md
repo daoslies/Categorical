@@ -4,9 +4,9 @@ A minimal neural network library in Haskell that makes the categorical structure
 
 ## To Run
 
-'''
+```
 cabal build all && cabal run all
-'''
+```
 
 ## Motivation
 - Layers are morphisms between vector spaces
