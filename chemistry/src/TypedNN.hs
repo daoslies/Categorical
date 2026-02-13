@@ -1,0 +1,1 @@
+-- connecting up chemistry and NN. not yet implemetend. check in geometry.hs and orbital.hs
