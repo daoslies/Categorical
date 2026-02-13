@@ -2,6 +2,12 @@
 
 A minimal neural network library in Haskell that makes the categorical structure of deep learning explicit in the type system.
 
+## To Run
+
+'''
+cabal build all && cabal run all
+'''
+
 ## Motivation
 - Layers are morphisms between vector spaces
 - Networks compose categorically
